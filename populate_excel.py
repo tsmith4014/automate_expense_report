@@ -4,6 +4,7 @@ from openpyxl.styles import Alignment
 from openpyxl.drawing.image import Image
 from datetime import datetime, timedelta
 import os
+# populate_excel.py
 
 def populate_template(data, template_path, output_path):
     """
