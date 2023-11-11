@@ -63,5 +63,11 @@ def populate_template(data, template_path, output_path):
         date_cell.value = (period_ending_date - timedelta(days=6-i)).date()
         date_cell.alignment = center_aligned_text
 
+
+    # Additional logic to populate cells D-19 to J-19 with 5.00 and D-21 to J-21 with 30.00
+    for i in range(4, 10):  # Columns D to J (4 to 10 in 1-indexed system)
+        sheet.cell(row=19, column=i).value = 5.00
+        sheet.cell(row=21, column=i).value = 30.00
+
     # Save the populated template to a new file
     wb.save(output_path)
