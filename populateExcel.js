@@ -1,3 +1,4 @@
+// failed attempt to do this without a backend just ignore this file
 // document
 //   .getElementById("expenseForm")
 //   .addEventListener("submit", function (event) {
