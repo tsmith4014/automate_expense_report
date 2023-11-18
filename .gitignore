@@ -1,6 +1,20 @@
 
 demo.mp4
-venv
-ea.jpg
+venv/
 expense_report.xlsx
 output.xlsx
+.env
+.selfs.key
+.gitignore
+.terraform/
+directions_images/
+.terraform.lock.hcl
+aci_api_public_key.pem
+highlevel-overview.md
+oci_api_key.pem
+selfs.key
+selfs.key.pub
+terraform.tfstate.backup
+terraform.tfstate
+DS_Store
+.DS_Store

@@ -42,3 +42,20 @@ def generate_excel():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+# Step 1: Transfer your application to the Oracle Compute instance
+# You can use SCP, Git, or any other method you prefer
+
+# Step 2: Install necessary software on the Oracle Compute instance
+# This typically includes Python, pip, and your application's dependencies
+
+# Step 3: Configure the application for production
+# This may include setting environment variables, configuring logging, etc.
+
+# Step 4: Set up a WSGI server
+# Gunicorn is a popular choice for serving Flask applications
+
+# Step 5: Configure a reverse proxy server
+# Nginx is a popular choice for this
