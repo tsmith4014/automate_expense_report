@@ -20,3 +20,4 @@ DS_Store
 .DS_Store
 .terraform.tfstate.lock.info
 __pycache__
+oci_api_public_key.pem
