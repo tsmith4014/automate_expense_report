@@ -18,3 +18,4 @@ terraform.tfstate.backup
 terraform.tfstate
 DS_Store
 .DS_Store
+.terraform.tfstate.lock.info
