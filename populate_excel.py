@@ -48,7 +48,10 @@ def populate_template(data, template_path, output_path):
     trip_purpose_cell.value = data['trip_purpose']
 
     # Calculate and populate dates based on the period ending date
+    # period_ending_date = datetime.strptime(data['period_ending'], '%Y-%m-%d')
     period_ending_date = datetime.strptime(data['period_ending'], '%Y-%m-%d')
+    if period_ending_date.year > 2022:
+        raise ValueError("The period ending date cannot be beyond 2022.")    
 
     # Populate static day names with "Date" before each day
     day_names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]

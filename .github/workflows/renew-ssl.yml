@@ -1,0 +1,107 @@
+# name: Renew SSL Certificate and Deploy
+
+# on:
+#   schedule:
+#     # Run at 00:00 on September 24, December 22, March 24, and June 24
+#     - cron: '0 0 24 9,12,3,6 *'
+#   workflow_dispatch:
+
+# jobs:
+#   renew-and-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout repository
+#       uses: actions/checkout@v2
+      
+#     - name: Login to DockerHub
+#       uses: docker/login-action@v1
+#       with:
+#         username: ${{ secrets.DOCKERHUB_USERNAME }}
+#         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        
+#     - name: Renew SSL Certificate
+#       run: |
+#         sudo certbot renew --quiet
+        
+#     - name: Build and Push Docker image
+#       run: |
+#         docker build -t yourusername/yourapp:latest .
+#         docker push yourusername/yourapp:latest
+        
+#     - name: Deploy to Server
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: ${{ secrets.SERVER_HOST }}
+#         username: ${{ secrets.SERVER_USER }}
+#         key: ${{ secrets.SERVER_SSH_KEY }}
+#         script: |
+#           docker pull yourusername/yourapp:latest
+#           docker stop yourapp || true
+#           docker rm yourapp || true
+#           docker run -d --name yourapp -p 80:80 -p 443:443 yourusername/yourapp:latest
+
+
+
+
+#           or 
+
+#           name: Renew SSL Certificate and Update Load Balancer
+
+# on:
+#   schedule:
+#     - cron: '0 0 */89 * *'  # Runs every 89 days
+
+# env:
+#   OCI_TENANCY: ${{ secrets.OCI_TENANCY }}
+#   OCI_USER: ${{ secrets.OCI_USER }}
+#   OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+#   OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+#   OCI_REGION: ${{ secrets.OCI_REGION }}
+#   CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
+#   DOMAIN: expenseapp.devopschad.com
+#   LB_OCID: ${{ secrets.OCI_LB_OCID }}
+#   CERT_NAME: expenseapp-cert
+
+# jobs:
+#   renew-cert:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
+    
+#     - name: Set up OCI CLI
+#       run: |
+#         echo "${{ env.OCI_PRIVATE_KEY }}" > oci_key.pem
+#         chmod 600 oci_key.pem
+#         oci setup config --config-file ./oci_config --profile DEFAULT --tenancy ${{ env.OCI_TENANCY }} --user ${{ env.OCI_USER }} --region ${{ env.OCI_REGION }} --fingerprint ${{ env.OCI_FINGERPRINT }} --key-file ./oci_key.pem
+#       env:
+#         OCI_TENANCY: ${{ secrets.OCI_TENANCY }}
+#         OCI_USER: ${{ secrets.OCI_USER }}
+#         OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+#         OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+#         OCI_REGION: ${{ secrets.OCI_REGION }}
+
+#     - name: Install Certbot
+#       run: |
+#         sudo apt-get update
+#         sudo apt-get install -y certbot
+
+#     - name: Renew Certificate using Certbot
+#       run: |
+#         sudo certbot certonly --manual --preferred-challenges=dns -d ${{ env.DOMAIN }} --email ${{ env.CERTBOT_EMAIL }} --agree-tos --manual-public-ip-logging-ok --config-dir ./letsencrypt --logs-dir ./letsencrypt/logs --work-dir ./letsencrypt
+#       env:
+#         DOMAIN: expenseapp.devopschad.com
+#         CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
+
+#     - name: Update Load Balancer Certificate in OCI
+#       run: |
+#         CERT_OCID=$(oci lb certificate list --load-balancer-id ${{ env.LB_OCID }} --query "data[?name=='${{ env.CERT_NAME }}'].id | [0]" --raw-output)
+#         oci lb certificate update \
+#           --load-balancer-id ${{ env.LB_OCID }} \
+#           --certificate-id $CERT_OCID \
+#           --private-key-file ./letsencrypt/live/${{ env.DOMAIN }}/privkey.pem \
+#           --public-certificate-file ./letsencrypt/live/${{ env.DOMAIN }}/cert.pem \
+#           --ca-certificate-file ./letsencrypt/live/${{ env.DOMAIN }}/fullchain.pem
+#       env:
+#         LB_OCID: ${{ secrets.OCI_LB_OCID }}
+#         CERT_NAME: expenseapp-cert
